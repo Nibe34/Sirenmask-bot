@@ -46,3 +46,13 @@ def reset_user_settings(user_id: int):
     if uid in user_state and "settings" in user_state[uid]:
         del user_state[uid]["settings"]
         save_state()
+
+def get_user_menu(user_id: int) -> str:
+    return user_state.get(str(user_id), {}).get("menu", "main")
+
+def set_user_menu(user_id: int, menu_name: str):
+    uid = str(user_id)
+    if uid not in user_state:
+        user_state[uid] = {}
+    user_state[uid]["menu"] = menu_name
+    save_state()
