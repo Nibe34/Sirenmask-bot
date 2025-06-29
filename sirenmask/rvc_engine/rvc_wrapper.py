@@ -13,7 +13,7 @@ from sirenmask.rvc_engine.postprocess import postprocess_audio
 vc_model = None
 current_model_name = None
 
-def convert_voice(input_path, model_name, output_path):
+def convert_voice(input_path, model_name, output_path, user_settings=None):
     global vc_model, current_model_name
 
     model_dir = os.path.join(VOICE_MODELS_PATH, model_name)
@@ -48,19 +48,20 @@ def convert_voice(input_path, model_name, output_path):
         os.environ["rmvpe_root"] = os.path.join("rvc_lib", "assets", "rmvpe")
         vc_model.get_vc(relative_model_path)
 
+    settings = user_settings or {}
     info, output = vc_model.vc_single(
         sid=0,
         input_audio_path=input_path,
-        f0_up_key=2,        # зміщення основної частоти (у півтонах), при >0 стає більш жіночним, при <0 більш чоловічним
+        f0_up_key=settings.get("f0_up_key", 2),
         f0_file=None,
-        f0_method="rmvpe",  # найвища якість
+        f0_method="rmvpe",
         file_index=index_path,
         file_index2="",
-        index_rate=0.8,     # індекс подібності ознак голосу до навченої моделі, значення від 0 до 1
-        filter_radius=7,    # зглажування частоти від 0 до 10, зменшуєшум але иоже прибирати деталі
-        resample_sr=48000,  # частота дискретизації, покращує якість. 48000 це досить багато
-        rms_mix_rate=0.25,  # баланс гучності між оригінальним і синтезованим сигналами, 0-1, оптимально 0.2-0.4
-        protect=0.5         # захист нестабільних частот від заміни, 0-1, оптимально 0.25-0.5
+        index_rate=settings.get("index_rate", 0.8),
+        filter_radius=settings.get("filter_radius", 7),
+        resample_sr=settings.get("resample_sr", 48000),
+        rms_mix_rate=settings.get("rms_mix_rate", 0.25),
+        protect=settings.get("protect", 0.5)
     )
 
     if "Success" in info:

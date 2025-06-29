@@ -3,7 +3,17 @@ from telegram.ext import CommandHandler, MessageHandler, CallbackQueryHandler, C
 from .whitelist import is_authorized
 from .voice_utils import process_voice
 from sirenmask.rvc_engine.model_manager import get_available_models
-from sirenmask.bot.state import get_user_model, set_user_model
+from sirenmask.bot.state import get_user_model, set_user_model, set_user_settings
+from sirenmask.bot.state import get_user_settings, reset_user_settings
+
+default_settings = {
+    "f0_up_key": 2,
+    "index_rate": 0.8,
+    "filter_radius": 7,
+    "resample_sr": 48000,
+    "rms_mix_rate": 0.25,
+    "protect": 0.5
+}
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -55,7 +65,8 @@ async def handle_voice(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     voice_file = await update.message.voice.get_file()
-    output_path = await process_voice(voice_file, model)
+    settings = get_user_settings(user_id)
+    output_path = await process_voice(voice_file, model, settings)
     await update.message.reply_voice(voice=open(output_path, "rb"))
 
 
@@ -64,3 +75,41 @@ def register_handlers(app):
     app.add_handler(CommandHandler("select_voice", select_voice))
     app.add_handler(CallbackQueryHandler(set_voice))
     app.add_handler(MessageHandler(filters.VOICE, handle_voice))
+    app.add_handler(CommandHandler("voice_settings", voice_settings))
+
+
+async def voice_settings(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user_id = update.effective_user.id
+    if not is_authorized(user_id):
+        return
+
+    args = context.args
+    if not args:
+        # показати поточні
+        current = get_user_settings(user_id) or default_settings
+        text = "🎛 Поточні параметри:\n" + "\n".join(
+            f"{k}: {v}" for k, v in current.items()
+        )
+        text += "\n\nЩоб змінити: /voice_settings f0_up_key=3"
+        text += "\nЩоб скинути до стандартних: /voice_settings reset"
+        await update.message.reply_text(text)
+        return
+
+    if args[0] == "reset":
+        reset_user_settings(user_id)
+        await update.message.reply_text("✅ Параметри скинуто до стандартних.")
+        return
+
+    # зміна параметра
+    try:
+        key, value = args[0].split("=")
+        if key not in default_settings:
+            await update.message.reply_text("⛔ Невідомий параметр.")
+            return
+        value = type(default_settings[key])(value)
+        current = get_user_settings(user_id) or default_settings.copy()
+        current[key] = value
+        set_user_settings(user_id, current)
+        await update.message.reply_text(f"✅ Параметр {key} встановлено в {value}")
+    except Exception as e:
+        await update.message.reply_text("⚠️ Помилка зміни параметра.")
