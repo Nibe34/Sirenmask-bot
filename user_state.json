@@ -4,6 +4,18 @@
     "menu": "settings_main"
   },
   "735353886": {
-    "menu": "main"
+    "menu": "voice_select",
+    "model": "Beyonce",
+    "settings": {
+      "f0_up_key": 3,
+      "index_rate": 0.8,
+      "filter_radius": 7,
+      "rms_mix_rate": 0.25,
+      "protect": 0.5
+    }
+  },
+  "847778627": {
+    "menu": "main",
+    "model": "QOP"
   }
 }
