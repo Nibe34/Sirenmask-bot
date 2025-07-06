@@ -18,6 +18,9 @@ COPY requirements.txt .
 # Встановлюємо Python-залежності
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Явно копіюємо rvc_lib
+COPY rvc_lib ./rvc_lib
+
 # Копіюємо увесь проєкт
 COPY . .
 
