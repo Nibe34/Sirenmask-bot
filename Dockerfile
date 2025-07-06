@@ -21,9 +21,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Копіюємо увесь проєкт
 COPY . .
 
-# Завантаження моделей (перед стартом)
-RUN python3 sirenmask/setup/download_models.py
-
 # Порт, який слухає додаток
 EXPOSE 5000
 

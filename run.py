@@ -1,8 +1,10 @@
 from telegram.ext import ApplicationBuilder
 from sirenmask.bot.handlers import register_handlers
 from sirenmask.config import TELEGRAM_TOKEN
+from sirenmask.setup.download_models import download_all
 
 def main():
+    download_all()
     app = ApplicationBuilder().token(TELEGRAM_TOKEN).build()
     register_handlers(app)
     app.run_polling()
