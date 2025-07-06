@@ -12,6 +12,9 @@ RUN apt-get update && apt-get install -y \
 # Робоча директорія
 WORKDIR /app
 
+# rvc_lib
+RUN git clone https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI.git
+
 # Копіюємо залежності
 COPY requirements.txt .
 
