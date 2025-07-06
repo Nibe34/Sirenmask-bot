@@ -13,7 +13,8 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /app
 
 # rvc_lib
-RUN git clone https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI.git
+RUN git clone https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI.git && \
+    mv Retrieval-based-Voice-Conversion-WebUI rvc_lib
 
 # Копіюємо залежності
 COPY requirements.txt .
@@ -21,11 +22,11 @@ COPY requirements.txt .
 # Встановлюємо Python-залежності
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Явно копіюємо rvc_lib
-COPY rvc_lib ./rvc_lib
-
 # Копіюємо увесь проєкт
 COPY . .
+
+# Додаємо rvc_lib до PYTHONPATH
+ENV PYTHONPATH="${PYTHONPATH}:/app"
 
 # Порт, який слухає додаток
 EXPOSE 5000
