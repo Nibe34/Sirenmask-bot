@@ -1,7 +1,7 @@
 {
   "747276552": {
-    "model": "Beyonce",
-    "menu": "settings_main"
+    "model": "QOP",
+    "menu": "main"
   },
   "735353886": {
     "menu": "voice_select",
@@ -15,6 +15,22 @@
     }
   },
   "847778627": {
+    "menu": "main",
+    "model": "QOP"
+  },
+  "637768356": {
+    "menu": "settings_main",
+    "model": "QOP"
+  },
+  "703734110": {
+    "menu": "main",
+    "model": "QOP"
+  },
+  "823726311": {
+    "menu": "main",
+    "model": "QOP"
+  },
+  "819896696": {
     "menu": "main",
     "model": "QOP"
   }

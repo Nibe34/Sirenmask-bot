@@ -5,6 +5,8 @@ temp/
 *.pyc
 assets/
 venv/
+collect_python_code.py
+
 
 
 # Byte-compiled / optimized / DLL files
