@@ -4,6 +4,9 @@ from sirenmask.config import TELEGRAM_TOKEN, TEMP_PATH
 from sirenmask.setup.download_models import download_all
 from pathlib import Path
 
+import sys
+print("PYTHONPATH:", sys.path)
+
 def main():
     print("🔧 Запуск main()")
     Path(TEMP_PATH).mkdir(parents=True, exist_ok=True)
