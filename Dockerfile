@@ -12,18 +12,17 @@ RUN apt-get update && apt-get install -y \
 # Робоча директорія
 WORKDIR /app
 
-# rvc_lib
-RUN git clone https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI.git rvc_lib
-
-
-# Копіюємо залежності
+# Копіюємо requirements
 COPY requirements.txt .
 
 # Встановлюємо Python-залежності
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Копіюємо увесь проєкт
+# Копіюємо увесь проєкт (спочатку)
 COPY . .
+
+# Клонуємо rvc_lib ПІСЛЯ того, як усе скопійовано
+RUN git clone https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI.git rvc_lib
 
 # Додаємо rvc_lib до PYTHONPATH
 ENV PYTHONPATH="/app"
