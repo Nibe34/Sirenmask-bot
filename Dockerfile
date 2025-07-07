@@ -22,7 +22,7 @@ COPY . .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Додаємо PYTHONPATH
-ENV PYTHONPATH="/app"
+ENV PYTHONPATH="/app:/app/rvc_lib"
 
 # Порт
 EXPOSE 5000
