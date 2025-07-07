@@ -1,6 +1,6 @@
 FROM python:3.10-slim
 
-# ffmpeg і системні залежності
+# Залежності
 RUN apt-get update && apt-get install -y \
     ffmpeg \
     libsndfile1 \
@@ -12,23 +12,20 @@ RUN apt-get update && apt-get install -y \
 # Робоча директорія
 WORKDIR /app
 
-# Копіюємо requirements
-COPY requirements.txt .
-
-# Встановлюємо Python-залежності
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Копіюємо увесь проєкт (спочатку)
-COPY . .
-
-# Клонуємо rvc_lib ПІСЛЯ того, як усе скопійовано
+# Клонуємо RVC репозиторій одразу сюди
 RUN git clone https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI.git rvc_lib
 
-# Додаємо rvc_lib до PYTHONPATH
+# Копіюємо локальні файли (після клону!)
+COPY . .
+
+# Встановлення залежностей
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Додаємо PYTHONPATH
 ENV PYTHONPATH="/app"
 
-# Порт, який слухає додаток
+# Порт
 EXPOSE 5000
 
-# Запуск бота
+# Запуск
 CMD ["python3", "run.py"]
