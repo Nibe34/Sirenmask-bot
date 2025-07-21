@@ -1,3 +1,5 @@
+import os
+
 from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import CommandHandler, MessageHandler, CallbackQueryHandler, ContextTypes, filters
 from .whitelist import is_authorized
@@ -94,7 +96,14 @@ async def handle_voice(update: Update, context: ContextTypes.DEFAULT_TYPE):
     voice_file = await update.message.voice.get_file()
     settings = get_user_settings(user_id)
     output_path = await process_voice(voice_file, model, settings)
-    await update.message.reply_voice(voice=open(output_path, "rb"))
+    try:
+        await update.message.reply_voice(voice=open(output_path, "rb"))
+    finally:
+        ogg_path = output_path.replace("_converted.wav", ".ogg")
+        wav_path = output_path.replace("_converted.wav", ".wav")
+        for path in [ogg_path, wav_path, output_path]:
+            if os.path.exists(path):
+                os.remove(path)
 
 
 
